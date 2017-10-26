@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+        canvas {
+            border: 1px solid #d3d3d3;
+            background-color: #f1f1f1;
+        }
+        </style>
+    </head>
+    <body onload="startGame()">
+
+    <!-- script -->
+    <script>
+        // start the game
+        var keyInterval=400, obstaclesInterval=230, northMagnetInterval=450, southMagnetInterval=529;
+        var startTime = new Date;
+        var timeTaken;
+        console.log(startTime);
+        var myGamePiece, playerBee, myScore, timeElapsed, backgroundImage, clockImage, keyImage;
+        var numOfKeys = 0;
+        var presentColor = "blue";
+        var northMagnet=[];
+        var southMagnet=[];
+        var otherBeesSouth=[];
+        var otherBeesNorth=[];
+        var keys = [];
+        var flipmode = false;
+        var myObstacles = [];
+        var northMagnetUp = false;
+        var southMagnetUp = false;
+        function startGame() {
+            myGamePiece = new component(10, 80, "south_magnet.png", 200, 190, "image");
+            playerBee = new component(40, 90, "player_bee.png", 160, 190, "image");
+            myScore = new component("30px", "Consolas", "black", 340, 40, "text");
+            timeElapsed = new component("30px", "Consolas", "black", 80, 40, "text");
+            backgroundImage = new component(600, 300, "background.png", 0, 0, "image");
+            clockImage = new component(50, 50, "clock.png", 20, 10, "image");
+            keyImage = new component(50, 50, "key.png", 280, 10, "image");
+            myGameArea.start();
+        }
+
+        // create a canvas
+        var myGameArea = {
+            canvas : document.createElement("canvas"),
+            start : function() {
+                this.canvas.width = 600;
+                this.canvas.height = 300;
+                this.context = this.canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                this.frameNo = 0;
+                this.interval = setInterval(updateGameArea, 10);
+                window.addEventListener('keydown', function (e) {
+                    myGameArea.key = e.keyCode;
+                })
+                window.addEventListener('keyup', function (e) {
+                    myGameArea.key = false;
+                })
+            },
+
+
+            clear : function() {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            },
+            stop : function() {
+                clearInterval(this.interval);
+            }    
+        }//finish canvas
+
+        // allows to create a component
+        function component(width, height, color, x, y, type) {
+            if (type == "image") {
+                this.image = new Image();
+                this.image.src = color;
+            }
+            this.type = type;
+            this.width = width;
+            this.height = height;
+            this.speedX = 0;
+            this.speedY = 0;
+            this.x = x;
+            this.y = y;
+            this.gravity = 0;
+            this.gravitySpeed = 0;  
+
+            this.update = function(){
+                ctx = myGameArea.context;
+                if (this.type == "text") {
+                  ctx.font = this.width + " " + this.height;
+                  ctx.fillStyle = color;
+                  ctx.fillText(this.text, this.x, this.y);
+                } 
+                else if (type == "image") {
+                  ctx.drawImage(this.image,
+                    this.x,
+                    this.y,
+                    this.width, this.height);
+                }
+                else {
+                  ctx.fillStyle = color;
+                  ctx.fillRect(this.x, this.y, this.width, this.height);
+                }
+            }  
+
+            this.flipColor = function(color){
+                ctx = myGameArea.context;
+                if(color == "red"){
+                    ctx.fillStyle = "blue";
+                    ctx.fillRect(this.x, this.y, this.width, this.height/2);
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(this.x, this.y+this.height/2, this.width, this.height/2);
+                    presentColor = "blue";
+                }
+                else{
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(this.x, this.y, this.width, this.height/2);
+                    ctx.fillStyle = "blue";
+                    ctx.fillRect(this.x, this.y+this.height/2, this.width, this.height/2);
+                    presentColor = "red";
+                }    
+            }
+
+            this.newPos = function() {
+                this.gravitySpeed += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY + this.gravitySpeed;
+                this.hitBottom();
+            }
+
+            this.hitBottom = function() {
+                var rockbottom = myGameArea.canvas.height - this.height;
+                if (this.y > rockbottom) {
+                    this.y = rockbottom;
+                    this.gravitySpeed = 0;
+                }
+            }
+
+
+            this.topPos = function(){
+                this.gravitySpeed += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY - this.gravitySpeed;
+                // this.hitTop();
+            }
+
+
+            // this.hitTop = function() {
+            //     var rockTop = myGameArea.canvas.height - this.height;
+            //     if (this.y > rockTop) {
+            //         this.y = 0;
+            //         // this.gravitySpeed = 0;
+            //     }
+            // }
+
+
+            this.crashWith = function(otherobj) {
+                var myleft = this.x;
+                var myright = this.x + (this.width);
+                var mytop = this.y;
+                var mybottom = this.y + (this.height);
+                var otherleft = otherobj.x;
+                var otherright = otherobj.x + (otherobj.width);
+                var othertop = otherobj.y;
+                var otherbottom = otherobj.y + (otherobj.height);
+                var crash = true;
+                if ((mybottom < othertop) ||(mytop > otherbottom) ||(myright < otherleft) ||(myleft > otherright)) {
+                   crash = false;
+                }
+                return crash;
+            }
+        }//finish component
+
+
+        //updateGameArea
+        function updateGameArea(){
+            if(numOfKeys==100){
+                alert("Congratulations!\nYou Got all 100 Keys.");
+                myGameArea.stop();
+                return;
+            }
+            var x, y;
+            
+            //check for crash with the key and update the numOfKeys if true
+            for (i = 0; i < keys.length; i += 1) {
+                if (myGamePiece.crashWith(keys[i])) {
+                        numOfKeys += 1;
+                        keys[i].x = -50;
+                        console.log("numOfKeys= "+numOfKeys);
+                }
+            }
+
+            //check for crash with obstacles and crash if true
+            for (i = 0; i < myObstacles.length; i += 1) {
+                if (myGamePiece.crashWith(myObstacles[i])) {
+                    console.log("crashed!");
+                    alert("Crashed!\nYou Hit an obstacle.\n"+"Keys Collected: "+numOfKeys+"\nTime Elapsed: "+timeTaken);
+                    myGameArea.stop();
+                    return;
+                }
+            }
+
+            //check for crash with southMagnet and throw up if true
+            for (i = 0; i < southMagnet.length; i += 1) {
+                if (myGamePiece.crashWith(southMagnet[i]) && presentColor == "blue") {
+                    // southMagnet[i].y = 0;
+                    otherBeesSouth[i].y -= 1;
+                    southMagnet[i].y -= 1
+                }
+            }
+
+            for(i=0; i<otherBeesSouth.length; i+=1){
+                if(otherBeesSouth[i].y < myGameArea.canvas.height - 80){
+                    accelerateObjects(otherBeesSouth[i], 0.02);
+                    accelerateObjects(southMagnet[i], 0.02);
+                    otherBeesSouth[i].topPos();
+                    southMagnet[i].topPos();
+                }
+            }
+
+            //check for crash with northMagnet and crash if true
+            for (i = 0; i < northMagnet.length; i += 1) {
+                if (myGamePiece.crashWith(northMagnet[i]) && presentColor == "blue") {
+                    console.log("crashed!");
+                    alert("Crashed!\nYou Hit a magnet with opposite polarity.\n"+"Keys Collected: "+numOfKeys+"\nTime Elapsed: "+timeTaken);
+                    myGameArea.stop();
+                    return;
+                }
+            }
+
+            myGameArea.clear();
+            backgroundImage.update();
+            myGameArea.frameNo += 1;
+
+            //spread the keys
+            if (everyinterval(keyInterval)&&(!everyinterval(obstaclesInterval))&&(!everyinterval(northMagnetInterval))&&(!everyinterval(southMagnetInterval))) {
+                x = myGameArea.canvas.width-20;
+                y = myGameArea.canvas.height - 150;
+                keys.push(new component(20, 60, "keys.png", x, Math.random()*100+y, "image"));
+            }
+
+            //spread the obstacles
+            if (myGameArea.frameNo == 1 || (everyinterval(obstaclesInterval))&&(!everyinterval(northMagnetInterval))&&(!everyinterval(southMagnetInterval))&&(!everyinterval(keyInterval))) {
+                x = myGameArea.canvas.width-20;
+                y = myGameArea.canvas.height - 80;
+                myObstacles.push(new component(20, 80, "obstacles.png", x, y, "image"));
+            }
+
+            //spread the northMagnet
+            if (everyinterval(northMagnetInterval) && (!everyinterval(obstaclesInterval)) && (!everyinterval(keyInterval))&&(!everyinterval(southMagnetInterval))) {
+                x = myGameArea.canvas.width-20;
+                y = myGameArea.canvas.height - 80;
+                northMagnet.push(new component(10, 80, "north_magnet.png", x, y, "image"));
+                otherBeesNorth.push(new component(40, 80, "other_bees.png", x+2, y, "image"));
+            }
+
+            //spread the southMagnet
+            if (everyinterval(southMagnetInterval) && (!everyinterval(northMagnetInterval)) && (!everyinterval(keyInterval)) &&(!everyinterval(obstaclesInterval))) {
+                x = myGameArea.canvas.width-20;
+                y = myGameArea.canvas.height - 80;
+                southMagnet.push(new component(10, 80, "south_magnet.png", x, y, "image"));
+                otherBeesSouth.push(new component(40, 80, "other_bees.png", x+2, y, "image"));
+            }
+            
+            //move the obstacles to the left
+            for (i = 0; i < myObstacles.length; i += 1) {
+                myObstacles[i].x -= 1;
+                myObstacles[i].update();
+            }
+
+            //move the keys to the left
+            for (j = 0; j < keys.length; j += 1) {
+                keys[j].x -= 1;
+                keys[j].update();
+            }
+
+            //move the northMagnet to the left
+            for (j = 0; j < northMagnet.length; j += 1) {
+                northMagnet[j].x -= 1;
+                otherBeesNorth[j].x -=1;
+                otherBeesNorth[j].update();
+                northMagnet[j].update();
+            }
+
+            //move the southMagnet to the left
+            for (j = 0; j < southMagnet.length; j += 1) {
+                southMagnet[j].x -= 1;
+                otherBeesSouth[j].x -=1;
+                otherBeesSouth[j].update();
+                southMagnet[j].update();
+            }
+
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0; 
+            playerBee.speedX = 0;
+            playerBee.speedY = 0;
+            flipColor = false;
+
+            //control   
+            if (myGameArea.key && myGameArea.key == 37) {myGamePiece.speedX = -1; playerBee.speedX = -1;}
+            if (myGameArea.key && myGameArea.key == 39) {myGamePiece.speedX = 1; playerBee.speedX = 1;}
+            if (myGameArea.key && myGameArea.key == 38) {myGamePiece.speedY = -5; playerBee.speedY = -5;}
+            if (myGameArea.key && myGameArea.key == 40) {myGamePiece.speedY = 1; playerBee.speedY = 1;}
+
+
+
+            accelerateObjects(myGamePiece, 0.02);
+            accelerateObjects(playerBee, 0.02);
+            var currentTime = new Date;
+            timeTaken = (currentTime - startTime)/1000;
+            myScore.text=numOfKeys+"/100";
+            timeElapsed.text=timeTaken+" sec";
+            myScore.update();
+            clockImage.update();
+            keyImage.update();
+            timeElapsed.update();
+            myGamePiece.newPos();
+            playerBee.newPos();
+            myGamePiece.update();
+            playerBee.update();
+        }//finish updateGameArea
+
+        function everyinterval(n) {
+            if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+            return false;
+        }
+
+        // function accelerate(n) {
+        //     myGamePiece.gravity = n;
+        //     playerBee.gravity = n;
+        // }
+
+        function accelerateObjects(object, n){
+            object.gravity = n;
+        }
+
+
+    </script>
+    <!-- script -->
+    </body>
+
+<div style="text-align:center;width:600px;">
+  <button onmousedown="window.location.reload()">Restart</button><br><br>
+    <!-- <button onmousedown="moveup()" onmouseup="clearmove()" ontouchstart="moveup()">UP</button><br><br> -->
+</div>
+<div style="text-align:center;width:600px;">
+    <h2>Instructions</h2>
+    <div style="text-align:left;width:600px;">
+        <strong>Controlling your magnet</strong><br>
+        <p>
+            use arrow keys for movement.<br>
+            Up: Jump<br>
+            Right: Move Forward<br>
+            Left: Move Backward<br>
+        </p>
+    </div>
+    <div style="text-align:left;width:600px;">
+        <strong>Obstacles, Keys and Magnets</strong><br>
+        <p>
+            --Collect Keys to score high.<br>
+            --Cacti are Obstacles. The Game will be Over if you touch them.<br>
+            --Foreign Magnets: If you collide with the magnets having the polarity opposite to your magnet, you loose the game, else it will be repelled.
+            <br>
+        </p>
+    </div>
+    <audio autoplay="autoplay">
+     <source src="gameSound.mp3" />     
+    </audio>
+</div>
+</html>
