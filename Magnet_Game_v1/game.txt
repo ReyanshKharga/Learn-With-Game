@@ -1,0 +1,53 @@
+
+----------Done----------
+Objective:
+Create a game which can be played on a browser. Simulate the scenario given in the image above:
+
+---------Done-----------
+Game Play:
+Player moves a magnet on a path & keeps collecting iron keys on the path. Each time the player's magnet gets attracted to another magnet, the player loses a life.
+
+·Elements in the game:
+
+1.Main bar magnet (which moves)
+
+2.Bar magnets - at fixed positions
+
+3.Iron keys
+
+4.Obstruction on the path
+
+----------Done-----------
+·Expected behaviour:
+
+1.Iron keys attract to the bar magnet
+
+2.Two bar magnets repel or attract based on their poles
+
+(Hint: Like poles repel & unlike poles attract)
+
+
+
+·Movements: (on specific key press events)
+1.Main bar magnet :
+
+§Move Right--------Done-----------
+
+§Flip (Change orientation of poles)  -------------Flip Property is yet to be implemented--------------
+
+§Jump--------Done---------------
+
+------------Done--------------------
+2.Iron key - Disappears when main bar magnet comes close to it
+
+3.Fixed position bar magnets:
+
+§Move upwards when facing a like pole of main bar magnet
+
+§Player loses life when facing an unlike pole of main bar magnet
+
+·Data to capture & display:
+
+1.Timer
+
+2.Keys collected

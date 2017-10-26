@@ -14,25 +14,28 @@
     <!-- script -->
     <script>
         // start the game
-        // var myObstacle;
+        var keyInterval=400, obstaclesInterval=230, northMagnetInterval=450, southMagnetInterval=529;
         var startTime = new Date;
         var timeTaken;
         console.log(startTime);
-        var myGamePiece;
+        var myGamePiece, playerBee, myScore, timeElapsed, backgroundImage, clockImage, keyImage;
         var numOfKeys = 0;
         var presentColor = "blue";
-        var northMagnetUpper=[];
-        var southMagnetUpper=[];
-        var northMagnetLower=[];
-        var southMagnetLower=[];
+        var northMagnet=[];
+        var southMagnet=[];
+        var otherBeesSouth=[];
+        var otherBeesNorth=[];
         var keys = [];
         var flipmode = false;
         var myObstacles = [];
+        var northMagnetUp = false;
+        var southMagnetUp = false;
         function startGame() {
-            myGamePiece = new component(20, 80, "red", 10, 190);
+            myGamePiece = new component(10, 80, "south_magnet.png", 200, 190, "image");
+            playerBee = new component(40, 90, "player_bee.png", 160, 190, "image");
             myScore = new component("30px", "Consolas", "black", 340, 40, "text");
             timeElapsed = new component("30px", "Consolas", "black", 80, 40, "text");
-            backgroundImage = new component(480, 270, "background.png", 0, 0, "image");
+            backgroundImage = new component(600, 300, "background.png", 0, 0, "image");
             clockImage = new component(50, 50, "clock.png", 20, 10, "image");
             keyImage = new component(50, 50, "key.png", 280, 10, "image");
             myGameArea.start();
@@ -42,8 +45,8 @@
         var myGameArea = {
             canvas : document.createElement("canvas"),
             start : function() {
-                this.canvas.width = 480;
-                this.canvas.height = 270;
+                this.canvas.width = 600;
+                this.canvas.height = 300;
                 this.context = this.canvas.getContext("2d");
                 document.body.insertBefore(this.canvas, document.body.childNodes[0]);
                 this.frameNo = 0;
@@ -55,6 +58,8 @@
                     myGameArea.key = false;
                 })
             },
+
+
             clear : function() {
                 this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
@@ -131,6 +136,24 @@
                 }
             }
 
+
+            this.topPos = function(){
+                this.gravitySpeed += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY - this.gravitySpeed;
+                // this.hitTop();
+            }
+
+
+            // this.hitTop = function() {
+            //     var rockTop = myGameArea.canvas.height - this.height;
+            //     if (this.y > rockTop) {
+            //         this.y = 0;
+            //         // this.gravitySpeed = 0;
+            //     }
+            // }
+
+
             this.crashWith = function(otherobj) {
                 var myleft = this.x;
                 var myright = this.x + (this.width);
@@ -161,12 +184,9 @@
             //check for crash with the key and update the numOfKeys if true
             for (i = 0; i < keys.length; i += 1) {
                 if (myGamePiece.crashWith(keys[i])) {
-                    // myGamePiece.update();
-                    // if((keys[i].x == myGamePiece.x + myGamePiece.width) || (keys[i].y == myGamePiece.y + myGamePiece.height)){
                         numOfKeys += 1;
-                        keys[i].x = -10;
+                        keys[i].x = -50;
                         console.log("numOfKeys= "+numOfKeys);
-                    // }
                 }
             }
 
@@ -180,23 +200,29 @@
                 }
             }
 
-            //check for crash with northMagnet and throw up if true
-            for (i = 0; i < northMagnetUpper.length; i += 1) {
-                if (myGamePiece.crashWith(northMagnetUpper[i]) && presentColor == "blue") {
-                    northMagnetUpper[i].y = 0;
-                    northMagnetLower[i].y = northMagnetLower[i].height;
-                    // myGameArea.stop();
-                    // return;
+            //check for crash with southMagnet and throw up if true
+            for (i = 0; i < southMagnet.length; i += 1) {
+                if (myGamePiece.crashWith(southMagnet[i]) && presentColor == "blue") {
+                    // southMagnet[i].y = 0;
+                    otherBeesSouth[i].y -= 1;
+                    southMagnet[i].y -= 1
                 }
             }
 
-            //check for crash with southMagnet and throw up if true
-            for (i = 0; i < southMagnetUpper.length; i += 1) {
-                if (myGamePiece.crashWith(southMagnetUpper[i]) && presentColor == "blue") {
+            for(i=0; i<otherBeesSouth.length; i+=1){
+                if(otherBeesSouth[i].y < myGameArea.canvas.height - 80){
+                    accelerateObjects(otherBeesSouth[i], 0.02);
+                    accelerateObjects(southMagnet[i], 0.02);
+                    otherBeesSouth[i].topPos();
+                    southMagnet[i].topPos();
+                }
+            }
+
+            //check for crash with northMagnet and crash if true
+            for (i = 0; i < northMagnet.length; i += 1) {
+                if (myGamePiece.crashWith(northMagnet[i]) && presentColor == "blue") {
                     console.log("crashed!");
                     alert("Crashed!\nYou Hit a magnet with opposite polarity.\n"+"Keys Collected: "+numOfKeys+"\nTime Elapsed: "+timeTaken);
-                    // southMagnetUpper[i].y = 0;
-                    // southMagnetLower[i].y = southMagnetLower[i].height;
                     myGameArea.stop();
                     return;
                 }
@@ -206,34 +232,34 @@
             backgroundImage.update();
             myGameArea.frameNo += 1;
 
-            //spread keys
-            if (everyinterval(150)&&(!everyinterval(200))) {
+            //spread the keys
+            if (everyinterval(keyInterval)&&(!everyinterval(obstaclesInterval))&&(!everyinterval(northMagnetInterval))&&(!everyinterval(southMagnetInterval))) {
                 x = myGameArea.canvas.width-20;
-                y = myGameArea.canvas.height - 40;
-                keys.push(new component(20, 40, "yellow", x, y));
+                y = myGameArea.canvas.height - 150;
+                keys.push(new component(20, 60, "keys.png", x, Math.random()*100+y, "image"));
             }
 
             //spread the obstacles
-            if (myGameArea.frameNo == 1 || everyinterval(200)) {
+            if (myGameArea.frameNo == 1 || (everyinterval(obstaclesInterval))&&(!everyinterval(northMagnetInterval))&&(!everyinterval(southMagnetInterval))&&(!everyinterval(keyInterval))) {
                 x = myGameArea.canvas.width-20;
-                y = myGameArea.canvas.height - 50;
-                myObstacles.push(new component(20, 50, "maroon", x, y));
+                y = myGameArea.canvas.height - 80;
+                myObstacles.push(new component(20, 80, "obstacles.png", x, y, "image"));
             }
 
             //spread the northMagnet
-            if (everyinterval(250) && (!everyinterval(150)) && (!everyinterval(200))) {
+            if (everyinterval(northMagnetInterval) && (!everyinterval(obstaclesInterval)) && (!everyinterval(keyInterval))&&(!everyinterval(southMagnetInterval))) {
                 x = myGameArea.canvas.width-20;
                 y = myGameArea.canvas.height - 80;
-                northMagnetUpper.push(new component(20, 40, "blue", x, y));
-                northMagnetLower.push(new component(20, 40, "red", x, y+40));
+                northMagnet.push(new component(10, 80, "north_magnet.png", x, y, "image"));
+                otherBeesNorth.push(new component(40, 80, "other_bees.png", x+2, y, "image"));
             }
 
             //spread the southMagnet
-            if (everyinterval(350) && (!everyinterval(150)) && (!everyinterval(200)) &&(!everyinterval(250))) {
+            if (everyinterval(southMagnetInterval) && (!everyinterval(northMagnetInterval)) && (!everyinterval(keyInterval)) &&(!everyinterval(obstaclesInterval))) {
                 x = myGameArea.canvas.width-20;
                 y = myGameArea.canvas.height - 80;
-                southMagnetUpper.push(new component(20, 40, "red", x, y));
-                southMagnetLower.push(new component(20, 40, "blue", x, y+40));
+                southMagnet.push(new component(10, 80, "south_magnet.png", x, y, "image"));
+                otherBeesSouth.push(new component(40, 80, "other_bees.png", x+2, y, "image"));
             }
             
             //move the obstacles to the left
@@ -249,45 +275,39 @@
             }
 
             //move the northMagnet to the left
-            for (j = 0; j < northMagnetUpper.length; j += 1) {
-                northMagnetUpper[j].x -= 1;
-                northMagnetLower[j].x -= 1;
-                northMagnetUpper[j].update();
-                northMagnetLower[j].update();
+            for (j = 0; j < northMagnet.length; j += 1) {
+                northMagnet[j].x -= 1;
+                otherBeesNorth[j].x -=1;
+                otherBeesNorth[j].update();
+                northMagnet[j].update();
             }
 
             //move the southMagnet to the left
-            for (j = 0; j < southMagnetUpper.length; j += 1) {
-                southMagnetUpper[j].x -= 1;
-                southMagnetLower[j].x -= 1;
-                southMagnetUpper[j].update();
-                southMagnetLower[j].update();
+            for (j = 0; j < southMagnet.length; j += 1) {
+                southMagnet[j].x -= 1;
+                otherBeesSouth[j].x -=1;
+                otherBeesSouth[j].update();
+                southMagnet[j].update();
             }
 
             myGamePiece.speedX = 0;
             myGamePiece.speedY = 0; 
+            playerBee.speedX = 0;
+            playerBee.speedY = 0;
+            flipColor = false;
 
             //control   
-            if (myGameArea.key && myGameArea.key == 37) {myGamePiece.speedX = -1;}
-            if (myGameArea.key && myGameArea.key == 39) {myGamePiece.speedX = 1; }
-            if (myGameArea.key && myGameArea.key == 38) {myGamePiece.speedY = -5;}
-            if (myGameArea.key && myGameArea.key == 40) {myGamePiece.speedY = 1; }
-            if (myGameArea.key && myGameArea.key == 70 && flipmode==false) {//key f
-                flipmode = true;
-            }
-
-            // console.log("presentColor is :" +flipmode);
-
-            if(flipmode){
-                myGamePiece.flipColor(presentColor);
-                // flipmode = false;
-            }
+            if (myGameArea.key && myGameArea.key == 37) {myGamePiece.speedX = -1; playerBee.speedX = -1;}
+            if (myGameArea.key && myGameArea.key == 39) {myGamePiece.speedX = 1; playerBee.speedX = 1;}
+            if (myGameArea.key && myGameArea.key == 38) {myGamePiece.speedY = -5; playerBee.speedY = -5;}
+            if (myGameArea.key && myGameArea.key == 40) {myGamePiece.speedY = 1; playerBee.speedY = 1;}
 
 
-            accelerate(0.02);
+
+            accelerateObjects(myGamePiece, 0.02);
+            accelerateObjects(playerBee, 0.02);
             var currentTime = new Date;
             timeTaken = (currentTime - startTime)/1000;
-            // console.log(timeTaken);
             myScore.text=numOfKeys+"/100";
             timeElapsed.text=timeTaken+" sec";
             myScore.update();
@@ -295,14 +315,9 @@
             keyImage.update();
             timeElapsed.update();
             myGamePiece.newPos();
-            // myGamePiece.flipColor(presentColor);
-            if(presentColor=="red"){
-                myGamePiece.flipColor("blue");
-            }
-            else{
-                myGamePiece.flipColor("red");
-                // presentColor = "blue";
-            }
+            playerBee.newPos();
+            myGamePiece.update();
+            playerBee.update();
         }//finish updateGameArea
 
         function everyinterval(n) {
@@ -310,20 +325,27 @@
             return false;
         }
 
-        function accelerate(n) {
-            myGamePiece.gravity = n;
+        // function accelerate(n) {
+        //     myGamePiece.gravity = n;
+        //     playerBee.gravity = n;
+        // }
+
+        function accelerateObjects(object, n){
+            object.gravity = n;
         }
+
 
     </script>
     <!-- script -->
     </body>
-<div style="text-align:center;width:500px;">
+
+<div style="text-align:center;width:600px;">
   <button onmousedown="window.location.reload()">Restart</button><br><br>
     <!-- <button onmousedown="moveup()" onmouseup="clearmove()" ontouchstart="moveup()">UP</button><br><br> -->
 </div>
-<div style="text-align:center;width:500px;">
+<div style="text-align:center;width:600px;">
     <h2>Instructions</h2>
-    <div style="text-align:left;width:500px;">
+    <div style="text-align:left;width:600px;">
         <strong>Controlling your magnet</strong><br>
         <p>
             use arrow keys for movement.<br>
@@ -332,12 +354,12 @@
             Left: Move Backward<br>
         </p>
     </div>
-    <div style="text-align:left;width:500px;">
-        <strong>Obstacles Keys and Magnets</strong><br>
+    <div style="text-align:left;width:600px;">
+        <strong>Obstacles, Keys and Magnets</strong><br>
         <p>
-            Golden color items are the Keys. Collect them to score high.<br>
-            Maroon color items are the Obstacles. Collision will make you loose the game.<br>
-            Other Magnets: If you collide with the magnets having the polarity opposite to your magnet, you loose the game.
+            --Collect Keys to score high.<br>
+            --Cacti are Obstacles. The Game will be Over if you touch them.<br>
+            --Foreign Magnets: If you collide with the magnets having the polarity opposite to your magnet, you loose the game, else it will be repelled.
             <br>
         </p>
     </div>
