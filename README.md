@@ -52,3 +52,7 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 1.Timer <br />
 
 2.Keys collected <br />
+
+
+
+Note: Current version doesn't have flip functionality. will be updated soon. <br />
