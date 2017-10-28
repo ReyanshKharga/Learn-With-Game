@@ -53,6 +53,5 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 
 2.Keys collected <br />
 
+![alt text](https://github.com/speedious/Magnet-Game-For-ButterflyFields/Magnet_Game.png)<br />
 
-
-Note: Current version doesn't have flip functionality. will be updated soon. <br />
