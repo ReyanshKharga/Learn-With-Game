@@ -39,5 +39,7 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 
 You can Play the game [Here](http://htmlpreview.github.com/?https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game_final_version/playGame.html)<br /><br />
 
+Note: If You are using firefox, the flip functionality doesn't work
+
 ![alt text](https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game.png)<br />
 
