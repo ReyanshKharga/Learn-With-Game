@@ -35,7 +35,9 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 
 <h4>Data to capture & display:</h4>
 1.Timer <br />
-2.Keys collected <br /><br />
+2.Keys collected <br />
+
+You can Play the game [Here](http://htmlpreview.github.com/?https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game_final_version/playGame.html)<br /><br />
 
 ![alt text](https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game.png)<br />
 
