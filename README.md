@@ -4,24 +4,24 @@ An intreactive game for ButterflyFields Company as part of an assignment for the
 
 
 # Objective:
-Create a game which can be played on a browser. Simulate the scenario given in the image above:
+Create a game which can be played on a browser. Simulate the scenario given in the image below:
 
 # Game Play:
 Player moves a magnet on a path & keeps collecting iron keys on the path. Each time the player's magnet gets attracted to another magnet, the player loses a life. <br />
 
-<h4> Elements in the game:</h4> <br />
+<h4> Elements in the game:</h4>
 1.Main bar magnet (which moves) <br />
 2.Bar magnets - at fixed positions <br />
 3.Iron keys <br />
 4.Obstruction on the path <br />
 
-<h4>Expected behaviour:</h4> <br />
+<h4>Expected behaviour:</h4>
 1.Iron keys attract to the bar magnet <br />
 2.Two bar magnets repel or attract based on their poles <br />
 
 (Hint: Like poles repel & unlike poles attract) <br />
 
-<h4>Movements: (on specific key press events)</h4> <br />
+<h4>Movements: (on specific key press events)</h4>
 1.Main bar magnet : <br />
 &emsp; §Move Right <br />
 &emsp; §Flip (Change orientation of poles) <br />
@@ -33,9 +33,9 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 &emsp; §Move upwards when facing a like pole of main bar magnet <br />
 &emsp; §Player loses life when facing an unlike pole of main bar magnet <br />
 
-<h4>Data to capture & display:</h4> <br />
+<h4>Data to capture & display:</h4>
 1.Timer <br />
-2.Keys collected <br />
+2.Keys collected <br /><br />
 
 ![alt text](https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game.png)<br />
 
