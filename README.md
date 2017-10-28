@@ -9,7 +9,7 @@ Create a game which can be played on a browser. Simulate the scenario given in t
 # Game Play:
 Player moves a magnet on a path & keeps collecting iron keys on the path. Each time the player's magnet gets attracted to another magnet, the player loses a life. <br />
 
-<h3> Elements in the game:</h3> <br />
+<h4> Elements in the game:</h4> <br />
 
 1.Main bar magnet (which moves) <br />
 
@@ -19,7 +19,7 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 
 4.Obstruction on the path <br />
 
-·Expected behaviour: <br />
+<h4>Expected behaviour:</h4> <br />
 
 1.Iron keys attract to the bar magnet <br />
 
@@ -29,7 +29,7 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 
 
 
-·Movements: (on specific key press events) <br />
+<h4>Movements: (on specific key press events)</h4> <br />
 1.Main bar magnet : <br />
 
 §Move Right <br />
@@ -47,7 +47,7 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 
 §Player loses life when facing an unlike pole of main bar magnet <br />
 
-·Data to capture & display: <br />
+<h4>Data to capture & display:</h4> <br />
 
 1.Timer <br />
 
