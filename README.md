@@ -9,7 +9,7 @@ Create a game which can be played on a browser. Simulate the scenario given in t
 # Game Play:
 Player moves a magnet on a path & keeps collecting iron keys on the path. Each time the player's magnet gets attracted to another magnet, the player loses a life. <br />
 
-·Elements in the game: <br />
+<h3> Elements in the game:</h3> <br />
 
 1.Main bar magnet (which moves) <br />
 
