@@ -18,6 +18,7 @@
     <script>
         // start the game
         var gameOver = false;
+        var speed = 10;
         var requiredNumOfKeys = 100; //change the value as per your wish
         var keyInterval=400, obstaclesInterval=230, northMagnetInterval=490, southMagnetInterval=529;
         var startTime = new Date;
@@ -52,7 +53,8 @@
         var south_magnet_image = "images/south_magnet.png";
         var other_bees_image = "images/other_bees.png";
         var display_game_over_image = "images/displayGameOver.png";
-        var Congratulations_image = "images/congratulations.png";
+        var congratulations_image = "images/congratulations.png";
+        var speedometer_image = "images/speedometer.png";
 
         //Sounds
         var background_sound = "sounds/backgroundSound1.mp3";
@@ -68,11 +70,13 @@
         function startGame() {
             myGamePiece = new component(10, 80, myGamePiece_image, 200, 190, "image");
             playerBee = new component(40, 90, playerBee_image, 160, 190, "image");
-            myScore = new component("30px", "Consolas", "black", 340, 45, "text");
+            myScore = new component("30px", "Consolas", "black", 280, 45, "text");
             timeElapsed = new component("30px", "Consolas", "black", 80, 45, "text");
+            mySpeed = new component("30px", "Consolas", "black", 460, 45, "text");
             backgroundImage = new component(600, 300, background_image, 0, 0, "image");
             clockImage = new component(50, 50, clock_image, 20, 10, "image");
-            keyImage = new component(50, 50, key_image, 280, 10, "image");
+            keyImage = new component(50, 50, key_image, 220, 10, "image");
+            speedometerImage = new component(50, 50, speedometer_image, 390, 10, "image");
             backgroundSound = new sound(background_sound);
             pointSound = new sound(points_sound);
             cactusCollideSound = new sound(cactus_collide_sound);
@@ -231,6 +235,12 @@
 
         //updateGameArea
         function updateGameArea(){
+        	if(numOfKeys==0){
+        		speed = 0.01;
+        	}
+        	if(numOfKeys > 0){
+        		speed = numOfKeys*0.03;
+        	}
             if(timeTaken % timeTaken == 0 && !gameOver){
                 backgroundSound.play();
             }
@@ -244,7 +254,7 @@
 
             if(gameOver){
                 if(numOfKeys == requiredNumOfKeys){
-                    congratulationsOnCompletion = new component(300, 150, Congratulations_image, 150, 60, "image");
+                    congratulationsOnCompletion = new component(300, 150, congratulations_image, 150, 60, "image");
                     congratulationsOnCompletion.update();
                 }
                 else{
@@ -338,7 +348,7 @@
 	            if (everyinterval(keyInterval)&&(!everyinterval(obstaclesInterval))&&(!everyinterval(northMagnetInterval))&&(!everyinterval(southMagnetInterval))) {
 	                x = myGameArea.canvas.width-20;
 	                y = myGameArea.canvas.height - 160;
-	                keys.push(new component(20, 60, metal_key_image, x, Math.random()*100+y, "image"));
+	                keys.push(new component(20, 60, key_image, x, Math.random()*100+y, "image"));
 	            }
 
 	            //spread the obstacles
@@ -366,28 +376,28 @@
 	            
 	            //move the obstacles to the left
 	            for (i = 0; i < myObstacles.length; i += 1) {
-	                myObstacles[i].x -= 1;
+	                myObstacles[i].x -= 1+speed;
 	                myObstacles[i].update();
 	            }
 
 	            //move the keys to the left
 	            for (j = 0; j < keys.length; j += 1) {
-	                keys[j].x -= 1;
+	                keys[j].x -= 1+speed;
 	                keys[j].update();
 	            }
 
 	            //move the northMagnet to the left
 	            for (j = 0; j < northMagnet.length; j += 1) {
-	                northMagnet[j].x -= 1;
-	                otherBeesNorth[j].x -=1;
+	                northMagnet[j].x -= 1+speed;
+	                otherBeesNorth[j].x -=1+speed;
 	                otherBeesNorth[j].update();
 	                northMagnet[j].update();
 	            }
 
 	            //move the southMagnet to the left
 	            for (j = 0; j < southMagnet.length; j += 1) {
-	                southMagnet[j].x -= 1;
-	                otherBeesSouth[j].x -=1;
+	                southMagnet[j].x -= 1+speed;
+	                otherBeesSouth[j].x -=1+speed;
 	                otherBeesSouth[j].update();
 	                southMagnet[j].update();
 	            }
@@ -426,9 +436,12 @@
 	            timeTaken = (currentTime - startTime)/1000;
 	            myScore.text=numOfKeys+"/"+requiredNumOfKeys;
 	            timeElapsed.text=timeTaken+" sec";
+	            mySpeed.text=(speed).toFixed(2)+"Km/h";
 	            myScore.update();
+	            mySpeed.update();
 	            clockImage.update();
 	            keyImage.update();
+	            speedometerImage.update();
 	            timeElapsed.update();
 	            myGamePiece.newPos();
 	            playerBee.newPos();
