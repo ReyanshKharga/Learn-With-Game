@@ -1,5 +1,7 @@
 # Magnet-Game-For-ButterflyFields
-An intreactive game for ButterflyFields Company as part of an assignment for the internship.
+An intreactive game for ButterflyFields Company as part of an assignment for the internship.<br />
+You can Play the game [Here](http://htmlpreview.github.com/?https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game_final_version/playGame.html)<br />
+Note: If You are using firefox, the flip functionality doesn't work
 
 
 
@@ -37,8 +39,6 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 1.Timer <br />
 2.Keys collected <br /><br />
 
-You can Play the game [Here](http://htmlpreview.github.com/?https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game_final_version/playGame.html)<br />
-Note: If You are using firefox, the flip functionality doesn't work
 
 ![alt text](https://github.com/speedious/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game.png)<br />
 
