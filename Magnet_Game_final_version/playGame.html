@@ -19,6 +19,7 @@
         // start the game
         var gameOver = false;
         var speed = 10;
+        var jump = 5;
         var requiredNumOfKeys = 100; //change the value as per your wish
         var keyInterval=400, obstaclesInterval=230, northMagnetInterval=490, southMagnetInterval=529;
         var startTime = new Date;
@@ -411,7 +412,7 @@
 	            //control   
 	            if (myGameArea.key && myGameArea.key == 37) {myGamePiece.speedX = -1; playerBee.speedX = -1;}
 	            if (myGameArea.key && myGameArea.key == 39) {myGamePiece.speedX = 1; playerBee.speedX = 1;}
-	            if (myGameArea.key && myGameArea.key == 38) {myGamePiece.speedY = -5; playerBee.speedY = -5;}
+	            if (myGameArea.key && myGameArea.key == 38 && myGamePiece.y > 0) {myGamePiece.speedY = -jump; playerBee.speedY = -jump;}
 	            if (myGameArea.key && myGameArea.key == 40) {myGamePiece.speedY = 1; playerBee.speedY = 1;}
 	            if (myGameArea.flipKey == 70 || myGameArea.flipKey == 102) {
 	            	myGameArea.flipKey = 10;
