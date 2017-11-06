@@ -46,6 +46,10 @@
         var myGamePiece_image = "images/south_magnet.png";
         var playerBee_image = "images/player_bee.png";
         var background_image = "images/background.png";
+        var background_image_1 = "images/background_1.png";
+        var background_image_2 = "images/background_2.png";
+        var background_image_3 = "images/background_3.png";
+        var background_image_4 = "images/background_4.png";0
         var clock_image = "images/clock.png";
         var key_image = "images/key.png";
         var metal_key_image = "images/keys.png";
@@ -412,7 +416,7 @@
 	            //control   
 	            if (myGameArea.key && myGameArea.key == 37 && myGamePiece.x > 40) {myGamePiece.speedX = -1; playerBee.speedX = -1;}
 	            if (myGameArea.key && myGameArea.key == 39 && myGamePiece.x < myGameArea.canvas.width-30) {myGamePiece.speedX = 1; playerBee.speedX = 1;}
-	            if (myGameArea.key && myGameArea.key == 38 && myGamePiece.y > 10) {myGamePiece.speedY = -jump; playerBee.speedY = -jump;}
+	            if (myGameArea.key && myGameArea.key == 38 && myGamePiece.y > 00) {myGamePiece.speedY = -jump; playerBee.speedY = -jump;}
 	            if (myGameArea.key && myGameArea.key == 40) {myGamePiece.speedY = 1; playerBee.speedY = 1;}
 	            if (myGameArea.flipKey == 70 || myGameArea.flipKey == 102) {
 	            	myGameArea.flipKey = 10;
@@ -429,6 +433,21 @@
 	            	}
 	            	flipmode = false;
 	            }
+
+	            //change background based on number of keys
+	            if(numOfKeys >= 10 && numOfKeys < 20){
+	            	backgroundImage.image.src = background_image_1;
+	            }
+	            if(numOfKeys >= 20 && numOfKeys < 50){
+	            	backgroundImage.image.src = background_image_2;
+	            }
+	            if(numOfKeys >= 50 && numOfKeys < 70){
+	            	backgroundImage.image.src = background_image_3;
+	            }
+	            if(numOfKeys >= 70){
+	            	backgroundImage.image.src = background_image_4;
+	            }
+	           
 
 
 	            accelerateObjects(myGamePiece, 0.02);
