@@ -18,7 +18,7 @@ Player moves a magnet on a path & keeps collecting iron keys on the path. Each t
 4. Obstruction on the path <br />
 
 <h4>Expected behaviour:</h4>
-1. Iron keys attract to the bar magnet <br />
+1. Iron keys get attracted to the bar magnet <br />
 2. Two bar magnets repel or attract based on their poles <br />
 
 (Hint: Like poles repel & unlike poles attract) <br />
