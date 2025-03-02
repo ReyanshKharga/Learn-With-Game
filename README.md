@@ -1,5 +1,4 @@
 # Learn With Game
-An intreactive desktop game for ButterflyFields Company as part of an assignment for the internship.<br />
 You can Play the game [Here](http://htmlpreview.github.io/?https://github.com/ReyanshKharga/Magnet-Game-For-ButterflyFields/blob/master/Magnet_Game_final_version/playGame.html)<br />
 Note: If You are using firefox, the flip functionality doesn't work
 
